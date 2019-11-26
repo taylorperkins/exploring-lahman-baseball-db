@@ -38,7 +38,15 @@ with vandy_players as (
     from collegeplaying
     where schoolid = 'vandy')
 
-select vp.playerid, p.namefirst || ' ' || p.namelast as full_name
+select p.namefirst || ' ' || p.namelast as full_name,
+       sum(salary)::numeric::money      as total_salary_earned
+
 from vandy_players vp
-inner join people p using(playerid);
+         inner join people p using (playerid)
+         inner join salaries s on p.playerid = s.playerid
+
+group by vp.playerid, full_name
+order by total_salary_earned desc
+limit 1;
+
 
