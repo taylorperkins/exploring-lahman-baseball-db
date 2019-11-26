@@ -1,9 +1,9 @@
 /*
     QUESTION::
         Using the fielding table, group players into three groups based on their position:
-            * ("OF")                   -> "Outfield"
-            * ("SS", "1B", "2B", "3B") -> "Infield"
-            * ("P", "C")               -> "Battery"
+            * ('OF')                   -> 'Outfield'
+            * ('SS', '1B', '2B', '3B') -> 'Infield'
+            * ('P', 'C')               -> 'Battery'
 
         Determine the number of putouts made by each of these three groups in 2016.
 
@@ -31,5 +31,17 @@
 
 */
 
-select *
-from teams;
+select case
+           when pos in ('OF') then 'Outfield'
+           when pos in ('SS', '1B', '2B', '3B') then 'Infield'
+           when pos in ('P', 'C') then 'Battery'
+           else 'Unknown'
+           end as position,
+       sum(po) as total_putouts
+
+from fielding
+group by position
+order by total_putouts desc;
+
+
+
