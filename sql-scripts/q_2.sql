@@ -33,5 +33,10 @@
 
 */
 
-select *
-from teams;
+select namefirst || ' ' || namelast as full_name, height
+from people
+where height = (
+    select min(height) as min_height
+    from people
+);
+
