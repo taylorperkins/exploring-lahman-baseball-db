@@ -76,5 +76,38 @@
 
 */
 
+
+with teams_ranked as (
+    select teamid,
+           yearid,
+           wswin,
+           w,
+           row_number() over (partition by yearid, wswin order by w desc, wswin desc) as rank
+
+    from teams
+    where wswin is not null
+      and yearid between 1970 and 2016
+)
+
 select *
-from teams;
+from (
+         (
+             select *, 'min_wins_and_did_win' as category
+             from teams_ranked
+             where wswin = 'Y'
+             order by w
+             limit 2
+         )
+
+         UNION ALL
+
+         (
+             select *, 'max_wins_and_did_not_win' as category
+             from teams_ranked
+             where rank = 1
+               and wswin = 'N'
+             order by w desc
+             limit 1
+         )
+     ) as sub;
+
