@@ -44,5 +44,30 @@
 
 */
 
+with attendance_stats as (
+    select team, park, round(sum(attendance) / sum(games)) as avg_attendance
+    from homegames
+    where year = 2016
+    group by team, park)
+
 select *
-from teams;
+from (
+
+    (
+        select *, 'top' as category
+        from attendance_stats
+        order by avg_attendance desc
+        limit 5
+    )
+
+    UNION ALL
+
+    (
+        select *, 'bottom' as category
+        from attendance_stats
+        order by avg_attendance
+        limit 5
+    )
+
+) as sub
+order by avg_attendance desc;
