@@ -33,5 +33,11 @@
 
 */
 
+with vandy_players as (
+    select distinct playerid
+    from collegeplaying
+    where schoolid = 'vandy')
+
 select *
-from teams;
+from vandy_players;
+
