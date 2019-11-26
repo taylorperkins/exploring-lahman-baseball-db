@@ -41,8 +41,9 @@ with shortest_player as (
         from people
     ))
 
-select sp.*, a.teamid
+select sp.full_name, sp.height, t.name as team_name, t.g as game_count
 from shortest_player sp
-inner join appearances a using(playerid);
+inner join appearances a using(playerid)
+inner join teams t on a.teamid = t.teamid and a.yearid = t.yearid;
 
 
