@@ -34,5 +34,32 @@
 
 */
 
-select *
-from teams;
+with decade_stats as (
+
+    with games_per_year as (
+        select year       as yearid,
+               sum(games) as total_games
+        from homegames
+        group by year),
+
+         batting_stats_per_year as (
+             select yearid,
+                    sum(so) as total_strikeouts,
+                    sum(hr) as total_hr
+             from batting
+             group by yearid)
+
+    select date_part('decade', to_date(bspy.yearid::varchar, 'YYYY')) as decade,
+           sum(total_games)                                           as games,
+           sum(total_strikeouts)                                      as strikeouts,
+           sum(total_hr)                                              as homeruns,
+           round(sum(total_hr) / sum(total_games), 2)                 as avg_hr_per_game,
+           round(sum(total_strikeouts) / sum(total_games), 2)         as avg_so_per_game
+
+    from games_per_year gpy
+             inner join batting_stats_per_year bspy
+                        on gpy.yearid = bspy.yearid and bspy.yearid >= 1920
+    group by decade)
+
+select round((corr(avg_hr_per_game, avg_so_per_game) * 100)::numeric, 3) as hr_so_corr
+from decade_stats;
