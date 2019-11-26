@@ -24,11 +24,14 @@
 
     Example output:
 
-        min_year | max_year | total_years
+        min_year | max_year | db_year_range
         _________________________________
         foo      | bar      | baz
 
 */
 
-select *
+select min(yearid)               as min_year,
+       max(yearid)               as max_year,
+       max(yearid) - min(yearid) as db_year_range
+
 from teams;
