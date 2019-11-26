@@ -38,6 +38,7 @@ with vandy_players as (
     from collegeplaying
     where schoolid = 'vandy')
 
-select *
-from vandy_players;
+select vp.playerid, p.namefirst || ' ' || p.namelast as full_name
+from vandy_players vp
+inner join people p using(playerid);
 
