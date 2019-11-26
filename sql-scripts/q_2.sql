@@ -33,10 +33,16 @@
 
 */
 
-select namefirst || ' ' || namelast as full_name, height
-from people
-where height = (
-    select min(height) as min_height
+with shortest_player as (
+    select playerid, namefirst || ' ' || namelast as full_name, height
     from people
-);
+    where height = (
+        select min(height) as min_height
+        from people
+    ))
+
+select sp.*, a.teamid
+from shortest_player sp
+inner join appearances a using(playerid);
+
 
