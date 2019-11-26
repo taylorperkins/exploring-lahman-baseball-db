@@ -36,5 +36,13 @@
 
 */
 
-select *
-from teams;
+select p.namefirst || ' ' || p.namelast        as name,
+       cs                                      as caught_stealing_count,
+       sb                                      as stolen_base_count,
+       round(sb / (cs + sb)::numeric * 100, 3) as pct_successful
+from batting b
+         inner join people p on b.playerid = p.playerid
+where yearid = 2016
+  and cs + sb >= 20
+order by pct_successful desc;
+
